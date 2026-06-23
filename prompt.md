@@ -1,0 +1,1 @@
+@FreeBox/ freebox 是一个java写的桌面版本tvbox, 他有两套解析逻辑，一套是基于java的因为环境限制功能不全，一套是基于和手机端魔改tvbox: TV-K 配对通信利用tvbox解析实现的。现在需要你开发一个仅保留和TV-K配对通信解析方式的electron版本的桌面版tvbox, 要求功能差不多，ui更好看,可以搜索，可以自动播放下一集，可以查看历史记录，仅保留TV-K 解析。技术栈: pnpm + ts + react + zusland + mpv.js  
