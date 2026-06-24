@@ -271,6 +271,9 @@ export const PlayerView: React.FC = () => {
         } else if (!e.altKey) {
           toggleWindowFullscreen();
         }
+      } else if (e.key === 'F11') {
+        e.preventDefault();
+        toggleWindowFullscreen();
       } else if (e.key === 'e' || e.key === 'E') {
         setShowEpisodePanel((p) => !p);
       }

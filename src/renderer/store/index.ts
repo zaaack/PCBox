@@ -239,7 +239,7 @@ export const useStore = create<AppState>((set, get) => ({
   connectedClient: null,
   setConnectedClient: (client) => set({ connectedClient: client }),
 
-  menuBarVisible: false,
+  menuBarVisible: true,
   setMenuBarVisible: (visible) => {
     const api = (window as any).electronAPI;
     if (api) {
@@ -621,10 +621,23 @@ export const useStore = create<AppState>((set, get) => ({
     const api = (window as any).electronAPI;
     if (!api) return;
 
+    const catVodHistory = {
+      key: `${historyItem.sourceKey}@@@${historyItem.id}`,
+      vodPic: historyItem.pic,
+      vodName: historyItem.name,
+      vodFlag: historyItem.playFlag,
+      vodRemarks: historyItem.episodeFlag,
+      episodeUrl: historyItem.episodeUrl,
+      revSort: historyItem.reverseSort,
+      position: historyItem.progress,
+      duration: historyItem.duration,
+      createTime: Date.now(),
+    };
+
     api.sendMessage(
       state.connectedClient.id,
       MessageCodes.SAVE_PLAY_HISTORY,
-      { ...historyItem, timestamp: Date.now() }
+      catVodHistory
     );
   },
 }));

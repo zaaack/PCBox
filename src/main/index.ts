@@ -72,7 +72,6 @@ if (!gotTheLock) {
       minHeight: 600,
       title: 'PcBox',
       backgroundColor: '#0f0f0f',
-      autoHideMenuBar: true,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: false,
@@ -92,10 +91,6 @@ if (!gotTheLock) {
         e.preventDefault();
         mainWindow!.hide();
       }
-    });
-
-    mainWindow.on('enter-full-screen', () => {
-      mainWindow?.setMenuBarVisibility(false);
     });
 
     mainWindow.on('closed', () => {

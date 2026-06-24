@@ -20,38 +20,11 @@ TV-K 是配套的 Android TV 盒子应用，用于解析视频源并推送到 Pc
 **蓝奏云下载：** https://wwblv.lanzoul.com/b0139erm1e  
 **密码：** 2i4s
 
-## 安装与运行
-
-### 环境要求
-
-- Node.js 18+
-- pnpm
-
-### 开发模式
-
-```bash
-# 安装依赖
-pnpm install
-
-# 启动开发环境
-pnpm dev
-```
-
-### 构建打包
-
-```bash
-# 构建
-pnpm build
-
-# 打包（输出到 release/ 目录）
-pnpm pack
-```
-
 ## 使用教程
 
 ### 1. 启动 PcBox
 
-运行 `pnpm dev` 或打开打包后的应用。
+打开打包后的应用，或通过 `pnpm dev` 启动开发版本。
 
 ### 2. 连接 TV-K
 
@@ -81,7 +54,7 @@ pnpm pack
 | 空格 | 播放/暂停 |
 | ← → | 快退/快进 5 秒 |
 | ↑ ↓ | 音量 +/- 10% |
-| F | 窗口全屏 |
+| F / F11 | 窗口全屏 |
 | Ctrl+F | 系统全屏 |
 | M | 静音 |
 | E | 显示/隐藏集数面板 |
@@ -94,6 +67,35 @@ pnpm pack
 - **主题**：深色 / 浅色 / 跟随系统
 - **菜单栏**：显示/隐藏 Electron 菜单栏
 - **WebSocket 服务**：启动/停止/修改端口
+
+## 开发
+
+### 环境要求
+
+- Node.js 18+
+- pnpm
+
+### 安装依赖
+
+```bash
+pnpm install
+```
+
+### 启动开发环境
+
+```bash
+pnpm dev
+```
+
+### 构建打包
+
+```bash
+# 构建
+pnpm build
+
+# 打包（输出到 release/ 目录）
+pnpm pack
+```
 
 ## 致谢
 

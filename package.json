@@ -48,6 +48,11 @@
     "files": [
       "dist/**/*"
     ],
+    "publish": {
+      "provider": "github",
+      "owner": "zaaack",
+      "repo": "PCBox"
+    },
     "win": {
       "target": "nsis",
       "icon": "resources/icon.ico"
