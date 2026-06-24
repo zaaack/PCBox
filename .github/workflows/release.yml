@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: true
+
+jobs:
+  build-desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-latest
+            os: linux
+          - platform: macos-latest
+            os: macos
+          - platform: windows-latest
+            os: windows
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Cache Electron
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/electron
+            ~/.cache/electron-builder
+          key: ${{ runner.os }}-electron-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-electron-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Build and Publish
+        run: npx electron-builder --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+  publish-release:
+    needs: [build-desktop]
+    if: always() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = context.ref.replace('refs/tags/', '');
+
+            let release;
+            try {
+              ({ data: release } = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag,
+              }));
+            } catch (e) {
+              if (e.status === 404) {
+                core.warning(`Release for ${tag} not found (desktop build may have failed). Skipping publish.`);
+                return;
+              }
+              throw e;
+            }
+
+            if (!release.draft) {
+              console.log('Release is already published, skipping.');
+              return;
+            }
+
+            const desktopOk = '${{ needs.build-desktop.result }}' === 'success';
+
+            if (!desktopOk) {
+              core.setFailed('Desktop build job failed or was cancelled.');
+              return;
+            }
+
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              draft: false,
+              prerelease: false
+            });
+            console.log('Release published successfully!');
