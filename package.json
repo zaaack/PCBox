@@ -17,7 +17,6 @@
   "dependencies": {
     "electron-store": "^8.2.0",
     "hls.js": "^1.6.16",
-    "mpv.js": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.6.0",
@@ -41,7 +40,7 @@
   },
   "build": {
     "appId": "com.pcbox.app",
-    "productName": "PcBox",
+    "productName": "PCBox",
     "directories": {
       "output": "release"
     },
@@ -52,6 +51,12 @@
       "provider": "github",
       "owner": "zaaack",
       "repo": "PCBox"
+    },
+    "mac": {
+      "target": ["dmg"]
+    },
+    "linux": {
+      "target": ["AppImage"]
     },
     "win": {
       "target": "nsis",

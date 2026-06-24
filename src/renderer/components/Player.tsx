@@ -114,7 +114,7 @@ export const PlayerView: React.FC = () => {
     player.on('error', () => {
       const error = player.error();
       if (error) {
-        console.error('[PcBox] Video error:', error.message);
+        console.error('[PCBox] Video error:', error.message);
         setPlayError(`Playback error: ${error.message}`);
       }
     });

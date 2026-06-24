@@ -31,11 +31,11 @@ if (!gotTheLock) {
       icon = nativeImage.createEmpty();
     }
     tray = new Tray(icon);
-    tray.setToolTip('PcBox');
+    tray.setToolTip('PCBox');
 
     const contextMenu = Menu.buildFromTemplate([
       {
-        label: 'Show PcBox',
+        label: 'Show PCBox',
         click: () => {
           if (mainWindow) {
             mainWindow.show();
@@ -45,7 +45,7 @@ if (!gotTheLock) {
       },
       { type: 'separator' },
       {
-        label: 'Quit PcBox',
+        label: 'Quit PCBox',
         click: () => {
           forceQuit();
         },
@@ -70,7 +70,7 @@ if (!gotTheLock) {
       height: Math.min(800, height - 100),
       minWidth: 900,
       minHeight: 600,
-      title: 'PcBox',
+      title: 'PCBox',
       backgroundColor: '#0f0f0f',
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
@@ -117,9 +117,9 @@ if (!gotTheLock) {
 
     try {
       await startProxyServer();
-      console.log('[PcBox] Proxy server started');
+      console.log('[PCBox] Proxy server started');
     } catch (err) {
-      console.error('[PcBox] Failed to start proxy server:', err);
+      console.error('[PCBox] Failed to start proxy server:', err);
     }
 
     app.on('activate', () => {

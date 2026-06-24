@@ -1,4 +1,4 @@
-# AGENTS.md — PcBox
+# AGENTS.md — PCBox
 
 Electron desktop player that pairs with TV-K (Android TVBox app) via WebSocket. The PC app does NOT parse video sources itself — all parsing is delegated to the connected TV-K device.
 

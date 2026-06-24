@@ -82,7 +82,7 @@ export const Home: React.FC = () => {
 
       {!currentSource && (
         <div className="empty-state">
-          <h2>Welcome to PcBox</h2>
+          <h2>Welcome to PCBox</h2>
           <p>Please start the WebSocket server and connect TV-K app</p>
           <p>Then select a source from the sidebar</p>
         </div>

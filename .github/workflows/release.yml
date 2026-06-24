@@ -55,55 +55,59 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Build and Publish
-        run: npx electron-builder --publish always
+      - name: Build with electron-builder
+        run: npx electron-builder --publish never
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: release/*
+          if-no-files-found: error
 
   publish-release:
     needs: [build-desktop]
-    if: always() && !cancelled()
     runs-on: ubuntu-latest
     steps:
-      - name: Publish release
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create release and upload assets
         uses: actions/github-script@v7
         with:
           script: |
+            const fs = require('fs');
+            const path = require('path');
+
             const tag = context.ref.replace('refs/tags/', '');
-
-            let release;
-            try {
-              ({ data: release } = await github.rest.repos.getReleaseByTag({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                tag,
-              }));
-            } catch (e) {
-              if (e.status === 404) {
-                core.warning(`Release for ${tag} not found (desktop build may have failed). Skipping publish.`);
-                return;
-              }
-              throw e;
-            }
-
-            if (!release.draft) {
-              console.log('Release is already published, skipping.');
-              return;
-            }
-
-            const desktopOk = '${{ needs.build-desktop.result }}' === 'success';
-
-            if (!desktopOk) {
-              core.setFailed('Desktop build job failed or was cancelled.');
-              return;
-            }
-
-            await github.rest.repos.updateRelease({
+            const { data: release } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              release_id: release.id,
+              tag_name: tag,
+              name: tag,
               draft: false,
-              prerelease: false
+              prerelease: false,
             });
-            console.log('Release published successfully!');
+            console.log(`Created release: ${release.id}`);
+
+            const entries = fs.readdirSync('artifacts', { withFileTypes: true });
+            const files = entries.filter(e => e.isFile()).map(e => e.name);
+            console.log(`Uploading ${files.length} files`);
+
+            for (const file of files) {
+              const fileData = fs.readFileSync(path.join('artifacts', file));
+              console.log(`  ${file} (${fileData.length} bytes)`);
+              await github.rest.repos.uploadReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: release.id,
+                name: file,
+                data: fileData,
+              });
+            }
+            console.log('Done!');

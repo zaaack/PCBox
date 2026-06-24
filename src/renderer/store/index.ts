@@ -353,18 +353,18 @@ export const useStore = create<AppState>((set, get) => ({
     const state = get();
     if (!state.currentSource || !state.connectedClient) return;
 
-    console.log('[PcBox] Loading home content, source:', state.currentSource.key);
+    console.log('[PCBox] Loading home content, source:', state.currentSource.key);
     set({ loading: true });
     sendTopicMessage(
       MessageCodes.GET_HOME_CONTENT,
       state.currentSource,
       (data) => {
-        console.log('[PcBox] Home response:', JSON.stringify(data)?.substring(0, 500));
+        console.log('[PCBox] Home response:', JSON.stringify(data)?.substring(0, 500));
         set({ loading: false });
         if (!data) return;
 
         const absSortXml = resultToAbsSortXml(data, state.currentSource!.key);
-        console.log('[PcBox] Home categories:', absSortXml.classes.sortList.length, 'videos:', absSortXml.list?.videoList.length);
+        console.log('[PCBox] Home categories:', absSortXml.classes.sortList.length, 'videos:', absSortXml.list?.videoList.length);
         if (absSortXml.classes.sortList.length > 0) {
           set({ categories: absSortXml.classes });
         }
@@ -405,7 +405,7 @@ export const useStore = create<AppState>((set, get) => ({
     const state = get();
     if (!state.currentSource || !state.connectedClient) return;
 
-    console.log('[PcBox] Loading detail:', vodId, 'source:', state.currentSource.key);
+    console.log('[PCBox] Loading detail:', vodId, 'source:', state.currentSource.key);
     set({ loading: true });
     sendTopicMessage(
       MessageCodes.GET_DETAIL_CONTENT,
@@ -414,16 +414,16 @@ export const useStore = create<AppState>((set, get) => ({
         vodId,
       },
       (data) => {
-        console.log('[PcBox] Detail response:', JSON.stringify(data)?.substring(0, 500));
+        console.log('[PCBox] Detail response:', JSON.stringify(data)?.substring(0, 500));
         set({ loading: false });
         if (!data) return;
 
         const absXml = resultToAbsXml(data, state.currentSource!.key);
-        console.log('[PcBox] Detail videos:', absXml.movie.videoList.length);
+        console.log('[PCBox] Detail videos:', absXml.movie.videoList.length);
         if (absXml.movie.videoList.length > 0) {
           const video = absXml.movie.videoList[0];
           video.sourceKey = state.currentSource!.key;
-          console.log('[PcBox] Detail video episodes:', video.urlBean?.infoList?.map(f => ({ flag: f.flag, episodes: f.beanList?.length })));
+          console.log('[PCBox] Detail video episodes:', video.urlBean?.infoList?.map(f => ({ flag: f.flag, episodes: f.beanList?.length })));
           set({ currentVideo: video });
         }
       }
@@ -439,7 +439,7 @@ export const useStore = create<AppState>((set, get) => ({
         MessageCodes.GET_PLAYER_CONTENT,
         { sourceKey, playFlag, vodId },
         async (data) => {
-          console.log('[PcBox] Player content:', JSON.stringify(data)?.substring(0, 500));
+          console.log('[PCBox] Player content:', JSON.stringify(data)?.substring(0, 500));
 
           if (!data) {
             resolve(null);
@@ -462,7 +462,7 @@ export const useStore = create<AppState>((set, get) => ({
                 headers = data.header;
               }
             } catch (e) {
-              console.warn('[PcBox] Failed to parse headers:', e);
+              console.warn('[PCBox] Failed to parse headers:', e);
             }
           }
 
@@ -488,19 +488,19 @@ export const useStore = create<AppState>((set, get) => ({
 
           if (parse === 1) {
             if (jx === 0) {
-              console.log('[PcBox] parse=1, jx=0: URL needs local parsing');
+              console.log('[PCBox] parse=1, jx=0: URL needs local parsing');
             } else {
-              console.log('[PcBox] parse=1, jx=1: URL needs external parsing service');
+              console.log('[PCBox] parse=1, jx=1: URL needs external parsing service');
             }
 
             const parsedUrl = await tryParseUrl(videoUrl);
             if (parsedUrl) {
-              console.log('[PcBox] URL parsed successfully:', parsedUrl.substring(0, 100));
+              console.log('[PCBox] URL parsed successfully:', parsedUrl.substring(0, 100));
               resolve({ url: parsedUrl, headers });
               return;
             }
 
-            console.warn('[PcBox] Failed to parse encrypted URL. Source may require a parsing service.');
+            console.warn('[PCBox] Failed to parse encrypted URL. Source may require a parsing service.');
             resolve(null);
             return;
           }
@@ -527,7 +527,7 @@ export const useStore = create<AppState>((set, get) => ({
 
     if (selectedSources.length === 0) return;
 
-    console.log('[PcBox] Searching:', keyword, 'across', selectedSources.length, 'sources');
+    console.log('[PCBox] Searching:', keyword, 'across', selectedSources.length, 'sources');
     set({ loading: true, searchKeyword: keyword, searchResults: [] });
 
     const allResults: TvBoxVideo[] = [];

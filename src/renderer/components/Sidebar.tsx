@@ -33,7 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenSettings, showSettings, 
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <h1 className="app-title">PcBox</h1>
+        <h1 className="app-title">PCBox</h1>
       </div>
 
       <div className="sidebar-status">
