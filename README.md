@@ -1,5 +1,8 @@
 # PCBox
 
+> ⚠️ **注意：** Electron 版本可能存在未及时修复的 Bug，最新版本已改用 Wails + WebView2 实现，体积更小、资源占用更少。  
+> 新版地址：https://github.com/zaaack/PCBoxWails
+
 Electron 桌面端 TVBox 播放器，配合 TV-K（Android TV盒子应用）使用。
 
 ## 功能特性
