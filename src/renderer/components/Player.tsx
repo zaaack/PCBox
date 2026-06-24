@@ -286,6 +286,7 @@ export const PlayerView: React.FC = () => {
     resetHideTimer();
   };
 
+  const hideCursor = !showOverlay && !showEpisodePanel;
   const isFs = document.fullscreenElement || isSystemFullscreen;
 
   if (!playUrl) {
@@ -316,7 +317,7 @@ export const PlayerView: React.FC = () => {
 
   return (
     <div
-      className={`player-page ${isFs ? 'is-fullscreen' : ''}`}
+      className={`player-page ${isFs ? 'is-fullscreen' : ''} ${hideCursor ? 'hide-cursor' : ''}`}
       onMouseMove={handleMouseMove}
     >
       <div className="video-container">
