@@ -21,23 +21,15 @@ if (!gotTheLock) {
     }
   });
 
-  function createTrayIcon() {
-    const size = 16;
-    const canvas = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-        <rect width="${size}" height="${size}" rx="3" fill="#667eea"/>
-        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
-              font-family="Arial" font-size="10" font-weight="bold" fill="white">P</text>
-      </svg>
-    `;
-    return nativeImage.createFromBuffer(
-      Buffer.from(canvas.trim()),
-      { width: size, height: size }
-    );
-  }
-
   function createTray() {
-    const icon = createTrayIcon();
+    const iconPath = path.join(app.isPackaged ? process.resourcesPath : __dirname, '../../icon.png');
+    let icon: Electron.NativeImage;
+    try {
+      icon = nativeImage.createFromPath(iconPath);
+      if (icon.isEmpty()) throw new Error('empty');
+    } catch {
+      icon = nativeImage.createEmpty();
+    }
     tray = new Tray(icon);
     tray.setToolTip('PcBox');
 
@@ -62,7 +54,7 @@ if (!gotTheLock) {
 
     tray.setContextMenu(contextMenu);
 
-    tray.on('double-click', () => {
+    tray.on('click', () => {
       if (mainWindow) {
         mainWindow.show();
         mainWindow.focus();
@@ -80,6 +72,7 @@ if (!gotTheLock) {
       minHeight: 600,
       title: 'PcBox',
       backgroundColor: '#0f0f0f',
+      autoHideMenuBar: true,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: false,
@@ -99,6 +92,10 @@ if (!gotTheLock) {
         e.preventDefault();
         mainWindow!.hide();
       }
+    });
+
+    mainWindow.on('enter-full-screen', () => {
+      mainWindow?.setMenuBarVisibility(false);
     });
 
     mainWindow.on('closed', () => {
@@ -212,5 +209,15 @@ if (!gotTheLock) {
 
   ipcMain.handle('window:is-frameless', () => {
     return mainWindow ? !(mainWindow as any).isFrame() : false;
+  });
+
+  ipcMain.handle('window:set-menu-bar-visibility', (_event, visible: boolean) => {
+    if (!mainWindow) return false;
+    mainWindow.setMenuBarVisibility(visible);
+    return true;
+  });
+
+  ipcMain.handle('window:is-menu-bar-visible', () => {
+    return mainWindow ? mainWindow.isMenuBarVisible() : true;
   });
 }

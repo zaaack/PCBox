@@ -31,6 +31,9 @@ const MessageCodes = {
 } as const;
 
 const SEARCH_CONFIG_KEY = 'pcbox_search_config';
+const THEME_KEY = 'pcbox_theme';
+
+type ThemeMode = 'light' | 'dark' | 'system';
 
 interface SearchConfig {
   selectedSources: string[];
@@ -51,6 +54,34 @@ function saveSearchConfig(config: SearchConfig): void {
   try {
     localStorage.setItem(SEARCH_CONFIG_KEY, JSON.stringify(config));
   } catch {}
+}
+
+function loadTheme(): ThemeMode {
+  try {
+    const raw = localStorage.getItem(THEME_KEY);
+    if (raw === 'light' || raw === 'dark' || raw === 'system') {
+      return raw;
+    }
+  } catch {}
+  return 'dark';
+}
+
+function saveTheme(theme: ThemeMode): void {
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch {}
+}
+
+function applyTheme(theme: ThemeMode): void {
+  let resolved = theme;
+  if (theme === 'system') {
+    resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', resolved);
+}
+
+function getSystemTheme(): 'light' | 'dark' {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 function generateTopicId(): string {
@@ -102,6 +133,10 @@ function sendTopicMessage(
 }
 
 interface AppState {
+  theme: ThemeMode;
+  setTheme: (theme: ThemeMode) => void;
+  resolvedTheme: 'light' | 'dark';
+
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
 
@@ -113,6 +148,9 @@ interface AppState {
 
   connectedClient: ClientInfo | null;
   setConnectedClient: (client: ClientInfo | null) => void;
+
+  menuBarVisible: boolean;
+  setMenuBarVisible: (visible: boolean) => void;
 
   sources: SourceBean[];
   setSources: (sources: SourceBean[]) => void;
@@ -148,8 +186,8 @@ interface AppState {
   history: VodInfo[];
   setHistory: (history: VodInfo[]) => void;
 
-  historyHighlightEpisode: { playFlag: string; episodeUrl: string } | null;
-  setHistoryHighlightEpisode: (info: { playFlag: string; episodeUrl: string } | null) => void;
+  historyHighlightEpisode: { playFlag: string; episodeUrl: string; progress?: number } | null;
+  setHistoryHighlightEpisode: (info: { playFlag: string; episodeUrl: string; progress?: number } | null) => void;
 
   searchKeyword: string;
   setSearchKeyword: (keyword: string) => void;
@@ -180,6 +218,15 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set, get) => ({
+  theme: loadTheme(),
+  resolvedTheme: loadTheme() === 'system' ? getSystemTheme() : loadTheme() === 'light' ? 'light' : 'dark',
+  setTheme: (theme) => {
+    saveTheme(theme);
+    applyTheme(theme);
+    const resolved = theme === 'system' ? getSystemTheme() : theme === 'light' ? 'light' : 'dark';
+    set({ theme, resolvedTheme: resolved });
+  },
+
   viewMode: 'home',
   setViewMode: (mode) => set({ viewMode: mode }),
 
@@ -191,6 +238,15 @@ export const useStore = create<AppState>((set, get) => ({
 
   connectedClient: null,
   setConnectedClient: (client) => set({ connectedClient: client }),
+
+  menuBarVisible: false,
+  setMenuBarVisible: (visible) => {
+    const api = (window as any).electronAPI;
+    if (api) {
+      api.setMenuBarVisibility(visible);
+    }
+    set({ menuBarVisible: visible });
+  },
 
   sources: [],
   setSources: (sources) => set({ sources }),

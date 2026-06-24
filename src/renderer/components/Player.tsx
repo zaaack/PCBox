@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useStore } from '../store';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
+import 'videojs-hotkeys';
 import Player from 'video.js/dist/types/player';
 import { FiArrowLeft, FiList, FiMaximize, FiMonitor } from 'react-icons/fi';
 import { MdOutlinePlayDisabled } from 'react-icons/md';
@@ -17,6 +18,7 @@ export const PlayerView: React.FC = () => {
     setPlayState,
     setViewMode,
     saveHistory,
+    historyHighlightEpisode,
   } = useStore();
 
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -84,6 +86,16 @@ export const PlayerView: React.FC = () => {
 
     playerRef.current = player;
 
+    player.hotkeys({
+      volumeStep: 0.1,
+      seekStep: 5,
+      enableVolumeScroll: true,
+      enableModifiersForNumbers: false,
+      enableQuickSeek: true,
+      enableJumpSeek: true,
+      alwaysCaptureHotkeys: true,
+    });
+
     player.on('ended', () => {
       playNextEpisode();
     });
@@ -114,6 +126,15 @@ export const PlayerView: React.FC = () => {
       }
     };
   }, [playUrl]);
+
+  useEffect(() => {
+    if (playerRef.current && historyHighlightEpisode?.progress) {
+      const seekTo = historyHighlightEpisode.progress / 1000;
+      playerRef.current.ready(() => {
+        playerRef.current?.currentTime(seekTo);
+      });
+    }
+  }, [playUrl, historyHighlightEpisode]);
 
   useEffect(() => {
     resetHideTimer();

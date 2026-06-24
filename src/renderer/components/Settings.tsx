@@ -7,12 +7,37 @@ interface SettingsProps {
 }
 
 export const Settings: React.FC<SettingsProps> = ({ onStartServer, onStopServer }) => {
-  const { wsRunning, wsPort, localIp, connectedClient } = useStore();
+  const { wsRunning, wsPort, localIp, connectedClient, theme, setTheme, menuBarVisible, setMenuBarVisible } = useStore();
   const [port, setPort] = useState(wsPort);
 
   return (
     <div className="settings">
       <h2>Settings</h2>
+
+      <div className="settings-section">
+        <h3>Appearance</h3>
+        <div className="settings-row">
+          <label>Theme:</label>
+          <select
+            className="settings-input"
+            value={theme}
+            onChange={(e) => setTheme(e.target.value as 'light' | 'dark' | 'system')}
+          >
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+            <option value="system">System</option>
+          </select>
+        </div>
+        <div className="settings-row">
+          <label>Menu Bar:</label>
+          <button
+            className={`btn ${menuBarVisible ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setMenuBarVisible(!menuBarVisible)}
+          >
+            {menuBarVisible ? 'Visible' : 'Hidden'}
+          </button>
+        </div>
+      </div>
 
       <div className="settings-section">
         <h3>WebSocket Server</h3>

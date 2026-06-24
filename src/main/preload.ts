@@ -27,6 +27,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setAlwaysOnTop: (flag: boolean) => ipcRenderer.invoke('window:set-always-on-top', flag),
   setFrame: (frame: boolean) => ipcRenderer.invoke('window:set-frame', frame),
   isFrameless: () => ipcRenderer.invoke('window:is-frameless'),
+  setMenuBarVisibility: (visible: boolean) => ipcRenderer.invoke('window:set-menu-bar-visibility', visible),
+  isMenuBarVisible: () => ipcRenderer.invoke('window:is-menu-bar-visible'),
 
   removeAllListeners: (channel: string) => {
     ipcRenderer.removeAllListeners(channel);

@@ -32,6 +32,9 @@ importers:
       video.js:
         specifier: ^8.23.8
         version: 8.23.8
+      videojs-hotkeys:
+        specifier: ^0.2.30
+        version: 0.2.30
       ws:
         specifier: ^8.18.0
         version: 8.21.0
@@ -2254,6 +2257,9 @@ packages:
 
   videojs-font@4.2.0:
     resolution: {integrity: sha512-YPq+wiKoGy2/M7ccjmlvwi58z2xsykkkfNMyIg4xb7EZQQNwB71hcSsB3o75CqQV7/y5lXkXhI/rsGAS7jfEmQ==}
+
+  videojs-hotkeys@0.2.30:
+    resolution: {integrity: sha512-G8kEQZPapoWDoEajh2Nroy4bCN1qVEul5AuzZqBS7ZCG45K7hqTYKgf1+fmYvG8m8u84sZmVMUvSWZBjaFW66Q==}
 
   videojs-vtt.js@0.15.5:
     resolution: {integrity: sha512-yZbBxvA7QMYn15Lr/ZfhhLPrNpI/RmCSCqgIff57GC2gIrV5YfyzLfLyZMj0NnZSAz8syB4N0nHXpZg9MyrMOQ==}
@@ -4796,6 +4802,8 @@ snapshots:
       video.js: 8.23.8
 
   videojs-font@4.2.0: {}
+
+  videojs-hotkeys@0.2.30: {}
 
   videojs-vtt.js@0.15.5:
     dependencies:

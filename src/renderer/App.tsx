@@ -18,6 +18,8 @@ const App: React.FC = () => {
     setCurrentSource,
     topicCallbacks,
     removeTopicCallback,
+    theme,
+    setTheme,
   } = useStore();
 
   const [showSettings, setShowSettings] = useState(false);
@@ -25,7 +27,16 @@ const App: React.FC = () => {
   useEffect(() => {
     initApp();
     setupListeners();
+    applyTheme();
   }, []);
+
+  const applyTheme = () => {
+    const savedTheme = useStore.getState().theme;
+    const resolved = savedTheme === 'system'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : savedTheme;
+    document.documentElement.setAttribute('data-theme', resolved);
+  };
 
   const initApp = async () => {
     const ip = await window.electronAPI?.getLocalIp();

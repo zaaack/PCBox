@@ -53,33 +53,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenSettings, showSettings, 
         <button
           className={`nav-item ${!showSettings && viewMode === 'home' ? 'active' : ''}`}
           onClick={() => { onNavigate(); setViewMode('home'); }}
+          title="Home"
         >
           <span className="nav-icon"><FiHome size={16} /></span>
-          <span>Home</span>
         </button>
 
         <button
           className={`nav-item ${!showSettings && viewMode === 'search' ? 'active' : ''}`}
           onClick={() => { onNavigate(); setViewMode('search'); }}
+          title="Search"
         >
           <span className="nav-icon"><FiSearch size={16} /></span>
-          <span>Search</span>
         </button>
 
         <button
           className={`nav-item ${!showSettings && viewMode === 'history' ? 'active' : ''}`}
           onClick={() => { onNavigate(); setViewMode('history'); }}
+          title="History"
         >
           <span className="nav-icon"><FiClock size={16} /></span>
-          <span>History</span>
         </button>
 
         <button
           className={`nav-item ${showSettings ? 'active' : ''}`}
           onClick={onOpenSettings}
+          title="Settings"
         >
           <span className="nav-icon"><FiSettings size={16} /></span>
-          <span>Settings</span>
         </button>
       </nav>
 

@@ -29,6 +29,7 @@ export const History: React.FC = () => {
     setHistoryHighlightEpisode({
       playFlag: item.playFlag || '',
       episodeUrl: item.episodeUrl || '',
+      progress: item.progress || 0,
     });
 
     const video: any = {
